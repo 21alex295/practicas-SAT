@@ -1,4 +1,5 @@
 import subprocess
+from sys import exit
 from itertools import combinations
 
 def line_prepender(filename, line):
@@ -49,7 +50,6 @@ nvars = n*n
 npreds = 0
 
 text_file = open("Output.txt", "w")
-#TODO: poñer ben o numero de predicados e variables.
 
 for y in range(0, n):
     for x in range(0, n):
@@ -65,41 +65,45 @@ for y in range(0, n):
 
         #Regras do xogo
         else:
+            """
             # Non pode haber 3 da mesma cor seguidas
             varY2 = celda(x, y + 1)
             varY3 = celda(x, y + 2)
             text_file.write("{0} {1} {2} 0\n".format(var, varY2, varY3))
             text_file.write("-{0} -{1} -{2} 0\n".format(var, varY2, varY3))
-            npreds = npreds + 2
+            npreds +=  2
 
             varX2 = celda(x + 1, y)
             varX3 = celda(x + 2, y)
             text_file.write("{0} {1} {2} 0\n".format(var, varX2, varX3))
             text_file.write("-{0} -{1} -{2} 0\n".format(var, varX2, varX3))
-            npreds = npreds + 2
+            npreds += 2
+            """
 
             # Ten que haber as mesmas de cada cor en cada fila e columna
             laterais = []
             for i in range(0, n):
                 laterais.append(celda(x + i, y))
                 laterais.append(-celda(x+i,y))
-
             #Contamos o numero de positivos e negativos de cada combinacion
-            countPos = 0
-            countNeg = 0
-
-            for x in combinations(laterais, 4):
-                for elem in x:
-                    if -elem in x:
-                        continue
+            for row in combinations(laterais, n):
+                count = 0
+                for elem in row:
+                    # Se se encontra o mesmo elemento en signo oposto, saltamos esta iteracion
+                    if -elem in row:
+                        count = 1
+                        break
                     if elem > 0:
-                        countPos = countPos + 1
+                        count = count + 1
                     if elem < 0:
-                        countNeg = countNeg + 1
-                if countNeg != countPos:
-                    print(x)
-
-
+                        count = count - 1
+                if count == 0:
+                    regra = ""
+                    for elem in row:
+                        regra += str(elem) + " "
+                    regra += "0\n"
+                    text_file.write(regra)
+                    npreds += 1
 
 text_file.close()
 
