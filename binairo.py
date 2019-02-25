@@ -193,32 +193,49 @@ for ver in verticais:
         text_file.write(regraNegras)
         npreds += 2
 
+
 # REGRA 3 => Non pode haber filas/columnas repetidas
-
-
-
 for fila1 in laterais:
     for fila2 in laterais:
+        listaPs = []
+        regraP = ""
         if fila1 != fila2:
-            for i in range(0, len(fila1)):
-                nvars += 1
-                text_file.write("-{0} {1} {2} 0".format(nvars, fila1[i], fila2[i]))
-                text_file.write("-{0} -{1} -{2} 0".format(nvars, fila1[i], fila2[i]))
-                text_file.write("-{0} {1} {2} 0".format(fila1[i], fila2[i], nvars))
-                text_file.write("{0} -{1} {2} 0".format(fila1[i], fila2[i], nvars))
-                npreds += 4
+            if fila1 != fila2:
+                for i in range(0, len(fila1)):
+                    nvars += 1
+                    text_file.write("-{0} {1} {2} 0\n".format(nvars, fila1[i], fila2[i]))
+                    text_file.write("-{0} -{1} -{2} 0\n".format(nvars, fila1[i], fila2[i]))
+                    text_file.write("-{0} {1} {2} 0\n".format(fila1[i], fila2[i], nvars))
+                    text_file.write("{0} -{1} {2} 0\n".format(fila1[i], fila2[i], nvars))
+                    npreds += 4
+                    listaPs.append(nvars)
+                for elem in listaPs:
+                    regraP += str(elem) + " "
+                regraP += " 0\n"
+                text_file.write(regraP)
+                npreds += 1
 
 
 for col1 in verticais:
     for col2 in verticais:
+        listaPs = []
+        regraP = ""
         if col1 != col2:
             for i in range(0, len(col1)):
                 nvars += 1
-                text_file.write("-{0} {1} {2} 0".format(nvars, col1[i], col2[i]))
-                text_file.write("-{0} -{1} -{2} 0".format(nvars, col1[i], col2[i]))
-                text_file.write("-{0} {1} {2} 0".format(col1[i], col2[i], nvars))
-                text_file.write("{0} -{1} {2} 0".format(col1[i], col2[i], nvars))
+                text_file.write("-{0} {1} {2} 0\n".format(nvars, col1[i], col2[i]))
+                text_file.write("-{0} -{1} -{2} 0\n".format(nvars, col1[i], col2[i]))
+                text_file.write("-{0} {1} {2} 0\n".format(col1[i], col2[i], nvars))
+                text_file.write("{0} -{1} {2} 0\n".format(col1[i], col2[i], nvars))
                 npreds += 4
+                listaPs.append(nvars)
+            for elem in listaPs:
+                regraP += str(elem) + " "
+            regraP += " 0\n"
+            text_file.write(regraP)
+            npreds += 1
+
+
 ######################################################################
 ######################################################################
 ######################################################################
@@ -270,17 +287,18 @@ print("\n")
 # Convirte o resultado de clasp na matriz de 1's e 0's
 visitados = []
 result = empty_list()
-for i in range(0, (n*n) - 1):
-        num = rulesList[i]
-        x = fila(num)
-        y = columna(num)
-        if (x, y) not in visitados:
-            visitados.append((x, y))
-            visitados.append((x, y))
-            if output[i] > 0:
-                result[x][y] = 1
-            elif output[i] < 0:
-                result[x][y] = 0
+for pos in output:
+        if abs(pos) <= n*n:
+            num = rulesList[abs(pos) - 1]
+            x = fila(num)
+            y = columna(num)
+            if (x, y) not in visitados:
+                visitados.append((x, y))
+                visitados.append((x, y))
+                if pos > 0:
+                    result[x][y] = 1
+                elif pos < 0:
+                    result[x][y] = 0
 
 for elem in result:
     print(*elem, sep="")
