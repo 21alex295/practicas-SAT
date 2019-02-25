@@ -161,7 +161,7 @@ for i in range(0, n):
 # REGRA 2 => Ten que haber as mesmas de cada cor en cada fila e columna
 # p ^ q ^ r --> ¬s
 #        ==
-# ¬p ∨ ¬q ∨ ¬r ∨ ¬s
+# ¬p ∨ ¬q ∨ ¬r ∨ ¬sº
 
 
 # Obtemos as filas e columnas da lista de regras
